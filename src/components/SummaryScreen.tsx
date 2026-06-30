@@ -20,22 +20,22 @@ export default function SummaryScreen({ state, onSaveToTrip, onEditScores }: Pro
   const payoutInfo = (() => {
     if (gameType === "vegas") {
       const net = tally.teamA - tally.teamB;
-      if (net === 0) return { tied: true, winnerName: "", amount: 0, subtitle: "No money changes hands", detail: `${tally.teamA} pts each` };
+      if (net === 0) return { tied: true, winnerName: "", amount: 0, subtitle: "All Square", detail: `${tally.teamA} pts each` };
       const winnerName = net > 0 ? teamAName : teamBName;
       const amount = Math.abs(net) * dollarRate;
-      return { tied: false, winnerName, amount, subtitle: `per player (${Math.abs(net)} pts × $${dollarRate.toFixed(2)})`, detail: `Each losing player pays each winning player $${amount.toFixed(2)}` };
+      return { tied: false, winnerName, amount, subtitle: `${Math.abs(net)} pts × ${dollarRate}`, detail: "" };
     }
     if (bettingFormat === "per-hole") {
       const net = wonA - wonB;
-      if (net === 0) return { tied: true, winnerName: "", amount: 0, subtitle: "No money changes hands", detail: `${wonA} holes each` };
+      if (net === 0) return { tied: true, winnerName: "", amount: 0, subtitle: "All Square", detail: `${wonA} holes each` };
       const winnerName = net > 0 ? teamAName : teamBName;
       const amount = Math.abs(net) * dollarRate;
-      return { tied: false, winnerName, amount, subtitle: `${Math.abs(net)} holes × $${dollarRate.toFixed(2)}`, detail: `Each losing player pays each winning player $${amount.toFixed(2)}` };
+      return { tied: false, winnerName, amount, subtitle: `${Math.abs(net)} holes × ${dollarRate} pts`, detail: "" };
     }
     if (bettingFormat === "standard") {
-      if (wonA === wonB) return { tied: true, winnerName: "", amount: 0, subtitle: "No money changes hands", detail: `${wonA}-${wonB} tie` };
+      if (wonA === wonB) return { tied: true, winnerName: "", amount: 0, subtitle: "All Square", detail: `${wonA}-${wonB} tie` };
       const winnerName = wonA > wonB ? teamAName : teamBName;
-      return { tied: false, winnerName, amount: standardAmount, subtitle: `${Math.max(wonA, wonB)}-${Math.min(wonA, wonB)} holes`, detail: `Each losing player pays each winning player $${standardAmount.toFixed(2)}` };
+      return { tied: false, winnerName, amount: standardAmount, subtitle: `${Math.max(wonA, wonB)}-${Math.min(wonA, wonB)} holes`, detail: "" };
     }
     // Nassau
     const front = holeResults.slice(0, 9);
@@ -53,9 +53,9 @@ export default function SummaryScreen({ state, onSaveToTrip, onEditScores }: Pro
     const nassauB = (frontWin === "B" ? nassauFront : 0) + (backWin === "B" ? nassauBack : 0) + (totalWin === "B" ? nassauTotal : 0);
     const net = nassauA - nassauB;
     const nassauBreakdown = [
-      `Front: ${frontWin === "tie" ? "Push" : frontWin === "A" ? `A +$${nassauFront}` : `B +$${nassauFront}`}`,
-      `Back: ${backWin === "tie" ? "Push" : backWin === "A" ? `A +$${nassauBack}` : `B +$${nassauBack}`}`,
-      `Total: ${totalWin === "tie" ? "Push" : totalWin === "A" ? `A +$${nassauTotal}` : `B +$${nassauTotal}`}`,
+      `Front: ${frontWin === "tie" ? "Push" : frontWin === "A" ? `A +${nassauFront}` : `B +${nassauFront}`}`,
+      `Back: ${backWin === "tie" ? "Push" : backWin === "A" ? `A +${nassauBack}` : `B +${nassauBack}`}`,
+      `Total: ${totalWin === "tie" ? "Push" : totalWin === "A" ? `A +${nassauTotal}` : `B +${nassauTotal}`}`,
     ].join("  ·  ");
     if (net === 0) return { tied: true, winnerName: "", amount: 0, subtitle: "Nassau: All Square", detail: nassauBreakdown };
     const winnerName = net > 0 ? teamAName : teamBName;
@@ -88,9 +88,9 @@ export default function SummaryScreen({ state, onSaveToTrip, onEditScores }: Pro
             <>
               <div className="text-4xl mb-2">🏆</div>
               <div className="text-2xl font-bold">{payoutInfo.winnerName} wins!</div>
-              <div className="text-5xl font-bold mt-3">${payoutInfo.amount.toFixed(2)}</div>
+              <div className="text-5xl font-bold mt-3">{payoutInfo.amount} <span className="text-3xl">pts</span></div>
               <div className="text-white/80 text-sm mt-1">{payoutInfo.subtitle}</div>
-              <div className="text-sm text-white/60 mt-2">{payoutInfo.detail}</div>
+              {payoutInfo.detail && <div className="text-sm text-white/60 mt-2">{payoutInfo.detail}</div>}
             </>
           )}
         </div>

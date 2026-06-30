@@ -17,14 +17,14 @@ function computeCourseHandicap(index: number, slope: number, rating: number, par
 }
 
 export default function SetupScreen({ onStart, existingSetup, roundNumber, onCancel }: Props) {
-  const [dollarRate, setDollarRate] = useState(existingSetup ? String(existingSetup.dollarRate) : "1.00");
+  const [dollarRate, setDollarRate] = useState(existingSetup ? String(existingSetup.dollarRate) : "1");
   const [courseId, setCourseId] = useState(existingSetup ? existingSetup.course.id : COURSES[0].id);
-  const [gameType, setGameType] = useState<GameType>(existingSetup ? existingSetup.gameType : "vegas");
-  const [bettingFormat, setBettingFormat] = useState<BettingFormat>(existingSetup ? existingSetup.bettingFormat : "per-hole");
-  const [nassauFront, setNassauFront] = useState(existingSetup ? String(existingSetup.nassauFront) : "5");
-  const [nassauBack, setNassauBack] = useState(existingSetup ? String(existingSetup.nassauBack) : "5");
-  const [nassauTotal, setNassauTotal] = useState(existingSetup ? String(existingSetup.nassauTotal) : "5");
-  const [standardAmount, setStandardAmount] = useState(existingSetup ? String(existingSetup.standardAmount) : "20");
+  const [gameType, setGameType] = useState<GameType>(existingSetup ? existingSetup.gameType : "best-ball-second");
+  const [bettingFormat, setBettingFormat] = useState<BettingFormat>(existingSetup ? existingSetup.bettingFormat : "nassau");
+  const [nassauFront, setNassauFront] = useState(existingSetup ? String(existingSetup.nassauFront) : "1");
+  const [nassauBack, setNassauBack] = useState(existingSetup ? String(existingSetup.nassauBack) : "1");
+  const [nassauTotal, setNassauTotal] = useState(existingSetup ? String(existingSetup.nassauTotal) : "1");
+  const [standardAmount, setStandardAmount] = useState(existingSetup ? String(existingSetup.standardAmount) : "1");
   const [handicapMode, setHandicapMode] = useState<HandicapMode>(existingSetup ? existingSetup.handicapMode : "manual");
   const [handicapInputs, setHandicapInputs] = useState<[string, string, string, string]>(
     existingSetup ? existingSetup.strokeCounts.map(String) as [string, string, string, string] : ["0", "0", "0", "0"]
@@ -47,14 +47,20 @@ export default function SetupScreen({ onStart, existingSetup, roundNumber, onCan
     setTeeId(newCourse.tees[0].id);
   }
 
-  function getStrokeCounts(): [number, number, number, number] {
+  function getRawHandicaps(): number[] {
     return handicapInputs.map((h) => {
       const val = parseFloat(h) || 0;
       if (handicapMode === "course") {
         return Math.max(0, computeCourseHandicap(val, tee.slope, tee.rating, tee.par));
       }
       return Math.max(0, Math.round(val));
-    }) as [number, number, number, number];
+    });
+  }
+
+  function getStrokeCounts(): [number, number, number, number] {
+    const raw = getRawHandicaps();
+    const min = Math.min(...raw);
+    return raw.map((s) => Math.max(0, s - min)) as [number, number, number, number];
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -148,16 +154,13 @@ export default function SetupScreen({ onStart, existingSetup, roundNumber, onCan
             </div>
           </div>
 
-          {/* Dollar rate — Vegas only */}
+          {/* Multiplier — Vegas only */}
           {gameType === "vegas" && (
             <div className={cardCls}>
-              <label className={labelCls}>$ Per Point</label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">$</span>
-                <input type="number" step="0.01" min="0" value={dollarRate} onChange={(e) => setDollarRate(e.target.value)}
-                  className="w-full bg-white border border-gray-200 rounded-lg pl-7 pr-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+              <label className={labelCls}>Pts Per Point</label>
+              <input type="number" step="1" min="0" value={dollarRate} onChange={(e) => setDollarRate(e.target.value)}
+                className={inputCls}
+              />
             </div>
           )}
 
@@ -176,12 +179,9 @@ export default function SetupScreen({ onStart, existingSetup, roundNumber, onCan
                   {([["Front 9", nassauFront, setNassauFront], ["Back 9", nassauBack, setNassauBack], ["Total", nassauTotal, setNassauTotal]] as [string, string, (v: string) => void][]).map(([label, val, setter]) => (
                     <div key={label}>
                       <label className="text-xs text-gray-500 block mb-1">{label}</label>
-                      <div className="relative">
-                        <span className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs">$</span>
-                        <input type="number" step="1" min="0" value={val} onChange={(e) => setter(e.target.value)}
-                          className="w-full bg-white border border-gray-200 rounded-lg pl-5 pr-2 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
+                      <input type="number" step="1" min="0" value={val} onChange={(e) => setter(e.target.value)}
+                        className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
                     </div>
                   ))}
                 </div>
@@ -189,25 +189,19 @@ export default function SetupScreen({ onStart, existingSetup, roundNumber, onCan
 
               {bettingFormat === "standard" && (
                 <div>
-                  <label className="text-xs text-gray-500 block mb-1">Total Bet</label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">$</span>
-                    <input type="number" step="1" min="0" value={standardAmount} onChange={(e) => setStandardAmount(e.target.value)}
-                      className="w-full bg-white border border-gray-200 rounded-lg pl-7 pr-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
+                  <label className="text-xs text-gray-500 block mb-1">Points</label>
+                  <input type="number" step="1" min="0" value={standardAmount} onChange={(e) => setStandardAmount(e.target.value)}
+                    className={inputCls}
+                  />
                 </div>
               )}
 
               {bettingFormat === "per-hole" && (
                 <div>
-                  <label className="text-xs text-gray-500 block mb-1">$ Per Hole</label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">$</span>
-                    <input type="number" step="0.01" min="0" value={dollarRate} onChange={(e) => setDollarRate(e.target.value)}
-                      className="w-full bg-white border border-gray-200 rounded-lg pl-7 pr-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
+                  <label className="text-xs text-gray-500 block mb-1">Pts Per Hole</label>
+                  <input type="number" step="1" min="0" value={dollarRate} onChange={(e) => setDollarRate(e.target.value)}
+                    className={inputCls}
+                  />
                 </div>
               )}
             </div>
@@ -225,35 +219,38 @@ export default function SetupScreen({ onStart, existingSetup, roundNumber, onCan
                 </button>
               ))}
             </div>
-            <div className="grid grid-cols-2 gap-2">
-              {DEFAULT_NAMES.map((name, i) => {
-                const inputVal = parseFloat(handicapInputs[i]) || 0;
-                const computed = handicapMode === "course"
-                  ? computeCourseHandicap(inputVal, tee.slope, tee.rating, tee.par)
-                  : null;
-                return (
-                  <div key={i}>
-                    <label className="text-xs text-gray-500 block mb-1 truncate">{name || `Player ${i + 1}`}</label>
-                    <input
-                      type="number" min="0" max="54" step={handicapMode === "course" ? "0.1" : "1"}
-                      value={handicapInputs[i]}
-                      onChange={(e) => setHandicapInput(i as 0|1|2|3, e.target.value)}
-                      className={inputCls}
-                      placeholder={handicapLabel}
-                    />
-                    {computed !== null && (
-                      <div className="text-xs text-gray-500 mt-1 text-center">
-                        Course HCP: <span className="text-blue-700 font-semibold">{computed}</span>
+            {(() => {
+              const raw = getRawHandicaps();
+              const min = Math.min(...raw);
+              return (
+                <div className="grid grid-cols-2 gap-2">
+                  {DEFAULT_NAMES.map((name, i) => {
+                    const relStrokes = Math.max(0, raw[i] - min);
+                    return (
+                      <div key={i}>
+                        <label className="text-xs text-gray-500 block mb-1 truncate">{name}</label>
+                        <input
+                          type="number" min="0" max="54" step={handicapMode === "course" ? "0.1" : "1"}
+                          value={handicapInputs[i]}
+                          onChange={(e) => setHandicapInput(i as 0|1|2|3, e.target.value)}
+                          className={inputCls}
+                          placeholder={handicapLabel}
+                        />
+                        <div className="text-xs text-gray-500 mt-1 text-center">
+                          {handicapMode === "course" && <span>HCP {raw[i]} → </span>}
+                          <span className="text-blue-700 font-semibold">{relStrokes} stroke{relStrokes !== 1 ? "s" : ""}</span>
+                          {relStrokes === 0 && <span className="text-gray-400"> (low)</span>}
+                        </div>
                       </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
             <p className="text-xs text-gray-400 mt-2">
               {handicapMode === "course"
-                ? `Enter each player's Handicap Index. Course HCP = Index × (${tee.slope}/113) + (${tee.rating} − ${tee.par}).`
-                : "Enter stroke count directly. Set 0 for gross play."}
+                ? `Strokes relative to lowest handicap. Course HCP = Index × (${tee.slope}/113) + (${tee.rating} − ${tee.par}).`
+                : "Strokes are relative to the lowest value — the lowest handicap plays scratch."}
             </p>
           </div>
 

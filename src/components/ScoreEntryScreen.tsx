@@ -193,7 +193,7 @@ export default function ScoreEntryScreen({ state, onEnterScores, onEditHole, onF
             })}
           </div>
 
-          <HoleResultPreview result={liveResult} players={players} dollarRate={dollarRate} />
+          <HoleResultPreview result={liveResult} players={players} />
 
           <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl text-lg transition-colors shadow-md">
             {editingHole === totalHoles - 1 ? "Finish Round" : `Save & Next →`}
@@ -208,17 +208,8 @@ export default function ScoreEntryScreen({ state, onEnterScores, onEditHole, onF
               <div className="w-6 text-center">#</div>
               <div className="w-6">Par</div>
               <div className="flex-1">Score</div>
-              {setup.gameType === "vegas" || setup.bettingFormat === "per-hole" ? (
-                <>
-                  <div className="w-16 text-right">Hole $</div>
-                  <div className="w-20 text-right">Total $</div>
-                </>
-              ) : (
-                <>
-                  <div className="w-10 text-right">Hole</div>
-                  <div className="w-24 text-right">{setup.bettingFormat === "nassau" ? "Nassau" : "Total"}</div>
-                </>
-              )}
+              <div className="w-10 text-right">Hole</div>
+              <div className="w-24 text-right">{setup.bettingFormat === "nassau" ? "Nassau" : "Total"}</div>
             </div>
             <div className="space-y-1">
               {holeResults.map((result, i) => {
@@ -228,7 +219,7 @@ export default function ScoreEntryScreen({ state, onEnterScores, onEditHole, onF
                     <ScorecardRow result={result} holeNum={i + 1} par={course.holes[i].par}
                       runningA={computeRunningTally(holeResults, i, "A")}
                       runningB={computeRunningTally(holeResults, i, "B")}
-                      dollarRate={dollarRate} players={players} setup={setup} holeIndex={i} allResults={holeResults}
+                      players={players} setup={setup} holeIndex={i} allResults={holeResults}
                     />
                   </button>
                 );
@@ -258,10 +249,9 @@ function computeRunningTally(results: HoleResult[], throughIndex: number, team: 
   return total;
 }
 
-function HoleResultPreview({ result, players, dollarRate }: {
+function HoleResultPreview({ result, players }: {
   result: HoleResult;
   players: [{ name: string }, { name: string }, { name: string }, { name: string }];
-  dollarRate: number;
 }) {
   const isVegas = result.gameType === "vegas";
   const isBestBall = result.gameType === "best-ball" || result.gameType === "best-ball-second";
@@ -282,7 +272,7 @@ function HoleResultPreview({ result, players, dollarRate }: {
     const winnerName = result.winner === "A"
       ? players[0].name.split(" ")[0] + "/" + players[1].name.split(" ")[0]
       : players[2].name.split(" ")[0] + "/" + players[3].name.split(" ")[0];
-    winLabel = <div className="text-xs text-white mt-1">{winnerName} wins ${(result.points * dollarRate).toFixed(2)}</div>;
+    winLabel = <div className="text-xs text-white mt-1">{winnerName} +{result.points} pt{result.points !== 1 ? "s" : ""}</div>;
   }
 
   return (
@@ -318,27 +308,18 @@ function HoleResultPreview({ result, players, dollarRate }: {
 }
 
 function ScorecardRow({
-  result, holeNum, par, runningA, runningB, dollarRate, players, setup, holeIndex, allResults,
+  result, holeNum, par, runningA, runningB, players, setup, holeIndex, allResults,
 }: {
   result: HoleResult; holeNum: number; par: number;
-  runningA: number; runningB: number; dollarRate: number;
+  runningA: number; runningB: number;
   players: [{ name: string }, { name: string }, { name: string }, { name: string }];
   setup: import("@/lib/gameState").GameSetup;
   holeIndex: number;
   allResults: HoleResult[];
 }) {
-  const isVegasOrPerHole = setup.gameType === "vegas" || setup.bettingFormat === "per-hole";
   const net = runningA - runningB;
 
-  const holeCell = isVegasOrPerHole ? (
-    <div className="w-16 text-xs text-right">
-      {result.winner !== "tie" ? (
-        <span className={result.winner === "A" ? "text-red-600 font-semibold" : "text-orange-600 font-semibold"}>
-          {result.winner} +${(result.points * dollarRate).toFixed(2)}
-        </span>
-      ) : <span className="text-gray-400">tie</span>}
-    </div>
-  ) : (
+  const holeCell = (
     <div className="w-10 text-xs text-right">
       {result.winner !== "tie" ? (
         <span className={result.winner === "A" ? "text-red-600 font-semibold" : "text-orange-600 font-semibold"}>{result.winner}</span>
@@ -347,10 +328,10 @@ function ScorecardRow({
   );
 
   let totalCell: React.ReactNode;
-  if (isVegasOrPerHole) {
+  if (setup.gameType === "vegas" || setup.bettingFormat === "per-hole") {
     totalCell = (
-      <div className={`text-xs text-right w-20 font-semibold ${net > 0 ? "text-red-600" : net < 0 ? "text-orange-600" : "text-gray-500"}`}>
-        {net === 0 ? "Even" : net > 0 ? `A +$${(net * dollarRate).toFixed(2)}` : `B +$${(Math.abs(net) * dollarRate).toFixed(2)}`}
+      <div className={`text-xs text-right w-24 font-semibold ${net > 0 ? "text-red-600" : net < 0 ? "text-orange-600" : "text-gray-500"}`}>
+        {net === 0 ? "Even" : net > 0 ? `A +${net}` : `B +${Math.abs(net)}`}
       </div>
     );
   } else if (setup.bettingFormat === "nassau") {
@@ -359,7 +340,7 @@ function ScorecardRow({
   } else {
     totalCell = (
       <div className={`text-xs text-right w-24 font-semibold ${net > 0 ? "text-red-600" : net < 0 ? "text-orange-600" : "text-gray-500"}`}>
-        {net === 0 ? "Even" : net > 0 ? `A +${net}` : `B +${Math.abs(net)}`}
+        {net === 0 ? "Even" : net > 0 ? `A +${net} pts` : `B +${Math.abs(net)} pts`}
       </div>
     );
   }
@@ -400,9 +381,9 @@ function computeNassauStatus(results: HoleResult[], frontStake: number, backStak
   const backDone = back.filter(Boolean).length === 9;
 
   const seg = (a: number, b: number, stake: number, done: boolean) => {
-    if (a > b) return { winner: "A" as const, dollars: done ? stake : null, lead: a - b };
-    if (b > a) return { winner: "B" as const, dollars: done ? stake : null, lead: b - a };
-    return { winner: "tie" as const, dollars: done ? 0 : null, lead: 0 };
+    if (a > b) return { winner: "A" as const, pts: done ? stake : null, lead: a - b };
+    if (b > a) return { winner: "B" as const, pts: done ? stake : null, lead: b - a };
+    return { winner: "tie" as const, pts: done ? 0 : null, lead: 0 };
   };
 
   const f = seg(frontA, frontB, frontStake, frontDone);
@@ -410,12 +391,12 @@ function computeNassauStatus(results: HoleResult[], frontStake: number, backStak
   const tot = seg(totalA, totalB, totalStake, frontDone && backDone);
 
   const fmt = (s: ReturnType<typeof seg>) =>
-    s.winner === "tie" ? "E" : `${s.winner}${s.dollars !== null ? ` $${s.dollars}` : `+${s.lead}`}`;
+    s.winner === "tie" ? "E" : `${s.winner}${s.pts !== null ? ` +${s.pts}` : `+${s.lead}`}`;
 
-  const totalDollarsA = (f.winner === "A" && f.dollars ? f.dollars : 0) + (bk.winner === "A" && bk.dollars ? bk.dollars : 0) + (tot.winner === "A" && tot.dollars ? tot.dollars : 0);
-  const totalDollarsB = (f.winner === "B" && f.dollars ? f.dollars : 0) + (bk.winner === "B" && bk.dollars ? bk.dollars : 0) + (tot.winner === "B" && tot.dollars ? tot.dollars : 0);
+  const totalPtsA = (f.winner === "A" && f.pts ? f.pts : 0) + (bk.winner === "A" && bk.pts ? bk.pts : 0) + (tot.winner === "A" && tot.pts ? tot.pts : 0);
+  const totalPtsB = (f.winner === "B" && f.pts ? f.pts : 0) + (bk.winner === "B" && bk.pts ? bk.pts : 0) + (tot.winner === "B" && tot.pts ? tot.pts : 0);
 
-  return { f, bk, tot, fLabel: fmt(f), bLabel: fmt(bk), tLabel: fmt(tot), totalDollarsA, totalDollarsB, summary: `F:${fmt(f)} B:${fmt(bk)} T:${fmt(tot)}` };
+  return { f, bk, tot, fLabel: fmt(f), bLabel: fmt(bk), tLabel: fmt(tot), totalPtsA, totalPtsB, summary: `F:${fmt(f)} B:${fmt(bk)} T:${fmt(tot)}` };
 }
 
 function getBettingHeader(
@@ -431,18 +412,18 @@ function getBettingHeader(
     if (netA === 0) return <div className="text-sm font-bold text-yellow-400">All Square</div>;
     const leader = netA > 0 ? teamAShort : teamBShort;
     const color = netA > 0 ? "text-red-300" : "text-orange-300";
-    return <div className={`text-sm font-bold ${color}`}>{leader} +${(Math.abs(netA) * dollarRate).toFixed(2)}</div>;
+    return <div className={`text-sm font-bold ${color}`}>{leader} +{Math.abs(netA) * dollarRate} pts</div>;
   }
 
   const wonA = holeResults.filter(r => r?.winner === "A").length;
   const wonB = holeResults.filter(r => r?.winner === "B").length;
 
   if (bettingFormat === "per-hole") {
-    const net = (wonA - wonB) * dollarRate;
+    const net = wonA - wonB;
     if (net === 0) return <div className="text-sm font-bold text-yellow-400">All Square</div>;
     const leader = net > 0 ? teamAShort : teamBShort;
     const color = net > 0 ? "text-red-300" : "text-orange-300";
-    return <div className={`text-sm font-bold ${color}`}>{leader} +${Math.abs(net).toFixed(2)}</div>;
+    return <div className={`text-sm font-bold ${color}`}>{leader} +{Math.abs(net)} holes</div>;
   }
 
   if (bettingFormat === "standard") {
@@ -452,7 +433,6 @@ function getBettingHeader(
     return (
       <div className="text-right">
         <div className={`text-sm font-bold ${color}`}>{leader} leads {Math.max(wonA, wonB)}-{Math.min(wonA, wonB)}</div>
-        <div className="text-xs text-blue-400">Bet: ${standardAmount.toFixed(2)}</div>
       </div>
     );
   }
@@ -467,9 +447,9 @@ function getBettingHeader(
         <span className="text-blue-700 mx-1">·</span>
         <span className="text-blue-400">T: </span>{ns.tLabel}
       </div>
-      {(ns.totalDollarsA > 0 || ns.totalDollarsB > 0) && (
-        <div className={`text-xs mt-0.5 ${ns.totalDollarsA > ns.totalDollarsB ? "text-red-300" : "text-orange-300"}`}>
-          {ns.totalDollarsA > ns.totalDollarsB ? `${teamAShort} +$${ns.totalDollarsA}` : `${teamBShort} +$${ns.totalDollarsB}`}
+      {(ns.totalPtsA > 0 || ns.totalPtsB > 0) && (
+        <div className={`text-xs mt-0.5 ${ns.totalPtsA > ns.totalPtsB ? "text-red-300" : "text-orange-300"}`}>
+          {ns.totalPtsA > ns.totalPtsB ? `${teamAShort} +${ns.totalPtsA} pts` : `${teamBShort} +${ns.totalPtsB} pts`}
         </div>
       )}
     </div>

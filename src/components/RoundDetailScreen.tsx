@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { getPlayerScores, computeRoundPayout, formatDate, type CompletedRound } from "@/lib/tripState";
 
 const PLAYERS = ["Drew", "Aaron", "Graham", "Clayton"] as const;
@@ -7,9 +8,11 @@ interface Props {
   round: CompletedRound;
   roundNumber: number;
   onBack: () => void;
+  onDelete: () => void;
 }
 
-export default function RoundDetailScreen({ round, roundNumber, onBack }: Props) {
+export default function RoundDetailScreen({ round, roundNumber, onBack, onDelete }: Props) {
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const { setup, holeResults } = round;
   const payout = computeRoundPayout(round);
   const tee = setup.course.tees.find((t) => t.id === setup.teeId);
@@ -18,10 +21,20 @@ export default function RoundDetailScreen({ round, roundNumber, onBack }: Props)
     <div className="min-h-screen bg-gray-200 text-gray-900 flex flex-col">
       <div className="bg-blue-950 px-4 py-4 flex items-center gap-3">
         <button onClick={onBack} className="text-blue-300 text-2xl leading-none w-8">‹</button>
-        <div>
+        <div className="flex-1">
           <h1 className="text-lg font-bold text-white">Round {roundNumber}</h1>
           <p className="text-blue-300 text-sm">{setup.course.name} · {formatDate(round.completedAt)}</p>
         </div>
+        {!confirmDelete ? (
+          <button onClick={() => setConfirmDelete(true)} className="text-xs text-blue-400 hover:text-red-400 transition-colors">
+            Delete
+          </button>
+        ) : (
+          <div className="flex gap-2">
+            <button onClick={onDelete} className="text-xs bg-red-600 text-white px-2 py-1 rounded-lg">Confirm</button>
+            <button onClick={() => setConfirmDelete(false)} className="text-xs text-blue-400">Cancel</button>
+          </div>
+        )}
       </div>
 
       <div className="flex-1 overflow-auto p-4 space-y-4">
@@ -41,7 +54,7 @@ export default function RoundDetailScreen({ round, roundNumber, onBack }: Props)
               <div className="text-sm text-white/80">
                 {payout.winnerTeam === "A" ? "Drew & Aaron" : "Graham & Clayton"} win
               </div>
-              <div className="text-4xl font-bold mt-1">${payout.amount.toFixed(2)}</div>
+              <div className="text-4xl font-bold mt-1">{payout.amount} <span className="text-2xl">pts</span></div>
               <div className="text-white/70 text-xs mt-1">{payout.detail}</div>
             </>
           )}

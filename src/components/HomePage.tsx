@@ -77,7 +77,7 @@ export default function HomePage({ trip, activeRound, onStartNewRound, onResumeR
                         Team {team}
                       </div>
                       <div className="text-xs text-gray-500 mb-2">{team === "A" ? TEAM_A : TEAM_B}</div>
-                      <div className="text-2xl font-bold text-gray-900">${amount.toFixed(2)}</div>
+                      <div className="text-2xl font-bold text-gray-900">{amount} pts</div>
                     </div>
                   );
                 })}
@@ -86,8 +86,8 @@ export default function HomePage({ trip, activeRound, onStartNewRound, onResumeR
                 {netA === 0
                   ? "All Square"
                   : netA > 0
-                  ? `Team A leads by $${netA.toFixed(2)}`
-                  : `Team B leads by $${Math.abs(netA).toFixed(2)}`}
+                  ? `Team A leads by ${netA} pts`
+                  : `Team B leads by ${Math.abs(netA)} pts`}
                 {" · "}
                 {trip.rounds.length} round{trip.rounds.length !== 1 ? "s" : ""}
               </p>
@@ -143,8 +143,8 @@ export default function HomePage({ trip, activeRound, onStartNewRound, onResumeR
                     {payout.winnerTeam === "tie"
                       ? "All Square"
                       : payout.winnerTeam === "A"
-                      ? `Team A wins $${payout.amount.toFixed(2)}`
-                      : `Team B wins $${payout.amount.toFixed(2)}`}
+                      ? `Team A +${payout.amount} pts`
+                      : `Team B +${payout.amount} pts`}
                   </div>
                 </button>
               );

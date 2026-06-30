@@ -94,6 +94,13 @@ export default function Home() {
     setScreen("round-detail");
   }
 
+  function deleteRound(id: string) {
+    const newTrip = { rounds: trip.rounds.filter((r) => r.id !== id) };
+    setTrip(newTrip);
+    saveTrip(newTrip);
+    setScreen("home");
+  }
+
   if (screen === "round-detail") {
     const round = trip.rounds.find((r) => r.id === selectedRoundId);
     if (!round) {
@@ -101,7 +108,7 @@ export default function Home() {
       return null;
     }
     const roundNumber = trip.rounds.findIndex((r) => r.id === selectedRoundId) + 1;
-    return <RoundDetailScreen round={round} roundNumber={roundNumber} onBack={() => setScreen("home")} />;
+    return <RoundDetailScreen round={round} roundNumber={roundNumber} onBack={() => setScreen("home")} onDelete={() => deleteRound(round.id)} />;
   }
 
   if (screen === "in-round") {
