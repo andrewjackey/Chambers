@@ -117,12 +117,12 @@ export default function SetupScreen({ onStart, existingSetup, roundNumber, onCan
           {/* Fixed teams */}
           <div className={`${cardCls} grid grid-cols-2 gap-4`}>
             <div>
-              <div className="text-xs font-semibold mb-2 uppercase tracking-wider text-red-600">Team A</div>
+              <div className="text-xs font-semibold mb-2 uppercase tracking-wider text-red-600">Olds</div>
               <div className="text-sm text-gray-700">Drew</div>
               <div className="text-sm text-gray-700">Aaron</div>
             </div>
             <div>
-              <div className="text-xs font-semibold mb-2 uppercase tracking-wider text-orange-500">Team B</div>
+              <div className="text-xs font-semibold mb-2 uppercase tracking-wider text-orange-500">Youths</div>
               <div className="text-sm text-gray-700">Graham</div>
               <div className="text-sm text-gray-700">Clayton</div>
             </div>

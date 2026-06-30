@@ -66,8 +66,8 @@ export default function ScoreEntryScreen({ state, onEnterScores, onEditHole, onF
 
   const completedCount = holeResults.filter(Boolean).length;
   const netA = tally.teamA - tally.teamB;
-  const teamAShort = players[0].name.split(" ")[0] + "/" + players[1].name.split(" ")[0];
-  const teamBShort = players[2].name.split(" ")[0] + "/" + players[3].name.split(" ")[0];
+  const teamAShort = "Olds";
+  const teamBShort = "Youths";
   const bettingHeader = getBettingHeader(holeResults, netA, setup, teamAShort, teamBShort);
 
   return (
@@ -135,9 +135,9 @@ export default function ScoreEntryScreen({ state, onEnterScores, onEditHole, onF
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-3">
-          {/* Team A */}
+          {/* Olds */}
           <div className="bg-gray-100 rounded-xl p-4 shadow-sm border-l-4 border-red-500">
-            <div className="text-xs font-semibold uppercase tracking-wider text-red-600 mb-3">Team A</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-red-600 mb-3">Olds</div>
             {[0, 1].map((pi) => {
               const idx = pi as 0 | 1;
               const si = strokeCounts[idx];
@@ -164,9 +164,9 @@ export default function ScoreEntryScreen({ state, onEnterScores, onEditHole, onF
             })}
           </div>
 
-          {/* Team B */}
+          {/* Youths */}
           <div className="bg-gray-100 rounded-xl p-4 shadow-sm border-l-4 border-orange-500">
-            <div className="text-xs font-semibold uppercase tracking-wider text-orange-600 mb-3">Team B</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-orange-600 mb-3">Youths</div>
             {[0, 1].map((pi) => {
               const idx = (pi + 2) as 2 | 3;
               const si = strokeCounts[idx];
@@ -279,7 +279,7 @@ function HoleResultPreview({ result, players }: {
     <div className="bg-blue-950 rounded-xl p-3 text-sm">
       <div className="flex justify-between items-center">
         <div className="text-center">
-          <div className="text-xs text-red-400 mb-1">Team A</div>
+          <div className="text-xs text-red-400 mb-1">Olds</div>
           <div className="font-mono text-2xl font-bold text-red-300">
             {flippedA ? <><span className="line-through text-gray-600 text-base mr-1">{result.teamA.rawNumber}</span>{result.teamA.finalNumber}</> : result.teamA.finalNumber}
           </div>
@@ -294,7 +294,7 @@ function HoleResultPreview({ result, players }: {
           {winLabel}
         </div>
         <div className="text-center">
-          <div className="text-xs text-orange-400 mb-1">Team B</div>
+          <div className="text-xs text-orange-400 mb-1">Youths</div>
           <div className="font-mono text-2xl font-bold text-orange-300">
             {flippedB ? <><span className="line-through text-gray-600 text-base mr-1">{result.teamB.rawNumber}</span>{result.teamB.finalNumber}</> : result.teamB.finalNumber}
           </div>

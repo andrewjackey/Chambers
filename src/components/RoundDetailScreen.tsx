@@ -52,7 +52,7 @@ export default function RoundDetailScreen({ round, roundNumber, onBack, onDelete
           ) : (
             <>
               <div className="text-sm text-white/80">
-                {payout.winnerTeam === "A" ? "Drew & Aaron" : "Graham & Clayton"} win
+                {payout.winnerTeam === "A" ? "Olds" : "Youths"} win
               </div>
               <div className="text-4xl font-bold mt-1">{payout.amount} <span className="text-2xl">pts</span></div>
               <div className="text-white/70 text-xs mt-1">{payout.detail}</div>

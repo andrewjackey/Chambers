@@ -2,8 +2,8 @@
 import { computeRoundPayout, computeTripTotals, formatDate, type TripState } from "@/lib/tripState";
 import type { GameState } from "@/lib/gameState";
 
-const TEAM_A = "Drew & Aaron";
-const TEAM_B = "Graham & Clayton";
+const TEAM_A = "Olds";
+const TEAM_B = "Youths";
 
 interface Props {
   trip: TripState;
@@ -24,7 +24,7 @@ export default function HomePage({ trip, activeRound, onStartNewRound, onResumeR
       <div className="bg-blue-950 px-6 py-6 text-center">
         <div className="text-3xl mb-1">⛳</div>
         <h1 className="text-xl font-bold text-white">Seattle 4th of July Trip</h1>
-        <p className="text-blue-300 text-sm">{TEAM_A} vs. {TEAM_B}</p>
+        <p className="text-blue-300 text-sm">Olds vs. Youths</p>
       </div>
 
       <div className="flex-1 overflow-auto p-4 space-y-4">
@@ -73,10 +73,9 @@ export default function HomePage({ trip, activeRound, onStartNewRound, onResumeR
                           : "border-gray-200 bg-gray-200"
                       }`}
                     >
-                      <div className={`text-xs font-semibold mb-1 ${team === "A" ? "text-red-600" : "text-orange-600"}`}>
-                        Team {team}
+                      <div className={`text-sm font-bold mb-1 ${team === "A" ? "text-red-600" : "text-orange-600"}`}>
+                        {team === "A" ? TEAM_A : TEAM_B}
                       </div>
-                      <div className="text-xs text-gray-500 mb-2">{team === "A" ? TEAM_A : TEAM_B}</div>
                       <div className="text-2xl font-bold text-gray-900">{amount} pts</div>
                     </div>
                   );
@@ -86,8 +85,8 @@ export default function HomePage({ trip, activeRound, onStartNewRound, onResumeR
                 {netA === 0
                   ? "All Square"
                   : netA > 0
-                  ? `Team A leads by ${netA} pts`
-                  : `Team B leads by ${Math.abs(netA)} pts`}
+                  ? `Olds lead by ${netA} pts`
+                  : `Youths lead by ${Math.abs(netA)} pts`}
                 {" · "}
                 {trip.rounds.length} round{trip.rounds.length !== 1 ? "s" : ""}
               </p>
@@ -143,8 +142,8 @@ export default function HomePage({ trip, activeRound, onStartNewRound, onResumeR
                     {payout.winnerTeam === "tie"
                       ? "All Square"
                       : payout.winnerTeam === "A"
-                      ? `Team A +${payout.amount} pts`
-                      : `Team B +${payout.amount} pts`}
+                      ? `Olds +${payout.amount} pts`
+                      : `Youths +${payout.amount} pts`}
                   </div>
                 </button>
               );

@@ -12,8 +12,8 @@ export default function SummaryScreen({ state, onSaveToTrip, onEditScores }: Pro
   if (!setup) return null;
   const { players, dollarRate, course, gameType, bettingFormat, nassauFront, nassauBack, nassauTotal, standardAmount } = setup;
 
-  const teamAName = `${players[0].name} / ${players[1].name}`;
-  const teamBName = `${players[2].name} / ${players[3].name}`;
+  const teamAName = "Olds";
+  const teamBName = "Youths";
   const wonA = holeResults.filter(r => r?.winner === "A").length;
   const wonB = holeResults.filter(r => r?.winner === "B").length;
 
@@ -109,7 +109,7 @@ export default function SummaryScreen({ state, onSaveToTrip, onEditScores }: Pro
                     ? team === "A" ? "border-red-500 bg-red-50" : "border-orange-500 bg-orange-50"
                     : "border-gray-300 bg-gray-200"
                 }`}>
-                  <div className={`text-xs font-semibold mb-1 ${team === "A" ? "text-red-600" : "text-orange-600"}`}>Team {team}</div>
+                  <div className={`text-xs font-semibold mb-1 ${team === "A" ? "text-red-600" : "text-orange-600"}`}>{team === "A" ? "Olds" : "Youths"}</div>
                   <div className="text-sm text-gray-700 truncate mb-2">{name}</div>
                   <div className="text-3xl font-bold text-gray-900">{pts}</div>
                   <div className="text-xs text-gray-400">{gameType === "vegas" ? "points" : "holes won"}</div>
