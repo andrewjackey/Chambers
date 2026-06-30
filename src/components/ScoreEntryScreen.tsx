@@ -265,13 +265,11 @@ function HoleResultPreview({ result, players }: {
   } else if (isBestBall) {
     winLabel = (
       <div className={`text-xs font-semibold mt-1 ${result.winner === "A" ? "text-red-300" : "text-orange-300"}`}>
-        Team {result.winner} wins{usedSecond ? <span className="text-gray-400"> (2nd)</span> : null}
+        {result.winner === "A" ? "Olds" : "Youths"} wins{usedSecond ? <span className="text-gray-400"> (2nd)</span> : null}
       </div>
     );
   } else {
-    const winnerName = result.winner === "A"
-      ? players[0].name.split(" ")[0] + "/" + players[1].name.split(" ")[0]
-      : players[2].name.split(" ")[0] + "/" + players[3].name.split(" ")[0];
+    const winnerName = result.winner === "A" ? "Olds" : "Youths";
     winLabel = <div className="text-xs text-white mt-1">{winnerName} +{result.points} pt{result.points !== 1 ? "s" : ""}</div>;
   }
 
@@ -320,9 +318,11 @@ function ScorecardRow({
   const net = runningA - runningB;
 
   const holeCell = (
-    <div className="w-10 text-xs text-right">
+    <div className="w-12 text-xs text-right">
       {result.winner !== "tie" ? (
-        <span className={result.winner === "A" ? "text-red-600 font-semibold" : "text-orange-600 font-semibold"}>{result.winner}</span>
+        <span className={result.winner === "A" ? "text-red-600 font-semibold" : "text-orange-600 font-semibold"}>
+          {result.winner === "A" ? "Olds" : "Youths"}
+        </span>
       ) : <span className="text-gray-400">tie</span>}
     </div>
   );
@@ -331,7 +331,7 @@ function ScorecardRow({
   if (setup.gameType === "vegas" || setup.bettingFormat === "per-hole") {
     totalCell = (
       <div className={`text-xs text-right w-24 font-semibold ${net > 0 ? "text-red-600" : net < 0 ? "text-orange-600" : "text-gray-500"}`}>
-        {net === 0 ? "Even" : net > 0 ? `A +${net}` : `B +${Math.abs(net)}`}
+        {net === 0 ? "Even" : net > 0 ? `Olds +${net}` : `Youths +${Math.abs(net)}`}
       </div>
     );
   } else if (setup.bettingFormat === "nassau") {
@@ -340,7 +340,7 @@ function ScorecardRow({
   } else {
     totalCell = (
       <div className={`text-xs text-right w-24 font-semibold ${net > 0 ? "text-red-600" : net < 0 ? "text-orange-600" : "text-gray-500"}`}>
-        {net === 0 ? "Even" : net > 0 ? `A +${net} pts` : `B +${Math.abs(net)} pts`}
+        {net === 0 ? "Even" : net > 0 ? `Olds +${net} pts` : `Youths +${Math.abs(net)} pts`}
       </div>
     );
   }
@@ -390,8 +390,11 @@ function computeNassauStatus(results: HoleResult[], frontStake: number, backStak
   const bk = seg(backA, backB, backStake, backDone);
   const tot = seg(totalA, totalB, totalStake, frontDone && backDone);
 
-  const fmt = (s: ReturnType<typeof seg>) =>
-    s.winner === "tie" ? "E" : `${s.winner}${s.pts !== null ? ` +${s.pts}` : `+${s.lead}`}`;
+  const fmt = (s: ReturnType<typeof seg>) => {
+    if (s.winner === "tie") return "E";
+    const name = s.winner === "A" ? "Olds" : "Youths";
+    return `${name}${s.pts !== null ? ` +${s.pts}` : `+${s.lead}`}`;
+  };
 
   const totalPtsA = (f.winner === "A" && f.pts ? f.pts : 0) + (bk.winner === "A" && bk.pts ? bk.pts : 0) + (tot.winner === "A" && tot.pts ? tot.pts : 0);
   const totalPtsB = (f.winner === "B" && f.pts ? f.pts : 0) + (bk.winner === "B" && bk.pts ? bk.pts : 0) + (tot.winner === "B" && tot.pts ? tot.pts : 0);

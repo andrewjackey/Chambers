@@ -140,7 +140,7 @@ export default function RoundDetailScreen({ round, roundNumber, onBack, onDelete
                   </div>
                   {result.winner !== "tie" ? (
                     <div className={`text-xs font-semibold ${result.winner === "A" ? "text-red-600" : "text-orange-600"}`}>
-                      {result.winner} +{result.points}
+                      {result.winner === "A" ? "Olds" : "Youths"} +{result.points}
                     </div>
                   ) : (
                     <div className="text-xs text-gray-400">tie</div>
