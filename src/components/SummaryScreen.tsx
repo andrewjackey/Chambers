@@ -53,9 +53,9 @@ export default function SummaryScreen({ state, onSaveToTrip, onEditScores }: Pro
     const nassauB = (frontWin === "B" ? nassauFront : 0) + (backWin === "B" ? nassauBack : 0) + (totalWin === "B" ? nassauTotal : 0);
     const net = nassauA - nassauB;
     const nassauBreakdown = [
-      `Front: ${frontWin === "tie" ? "Push" : frontWin === "A" ? `A +${nassauFront}` : `B +${nassauFront}`}`,
-      `Back: ${backWin === "tie" ? "Push" : backWin === "A" ? `A +${nassauBack}` : `B +${nassauBack}`}`,
-      `Total: ${totalWin === "tie" ? "Push" : totalWin === "A" ? `A +${nassauTotal}` : `B +${nassauTotal}`}`,
+      `Front: ${frontWin === "tie" ? "Push" : frontWin === "A" ? `Olds +${nassauFront}` : `Youths +${nassauFront}`}`,
+      `Back: ${backWin === "tie" ? "Push" : backWin === "A" ? `Olds +${nassauBack}` : `Youths +${nassauBack}`}`,
+      `Total: ${totalWin === "tie" ? "Push" : totalWin === "A" ? `Olds +${nassauTotal}` : `Youths +${nassauTotal}`}`,
     ].join("  ·  ");
     if (net === 0) return { tied: true, winnerName: "", amount: 0, subtitle: "Nassau: All Square", detail: nassauBreakdown };
     const winnerName = net > 0 ? teamAName : teamBName;
