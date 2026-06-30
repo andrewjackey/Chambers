@@ -71,7 +71,7 @@ export default function ScoreEntryScreen({ state, onEnterScores, onEditHole, onF
   const bettingHeader = getBettingHeader(holeResults, netA, setup, teamAShort, teamBShort);
 
   return (
-    <div className="min-h-screen bg-slate-100 text-gray-900 flex flex-col">
+    <div className="min-h-screen bg-gray-200 text-gray-900 flex flex-col">
       {/* Header — dark navy */}
       <div className="bg-blue-950 px-4 py-3 flex items-center justify-between border-b border-blue-900">
         <div className="flex items-center gap-3">
@@ -136,7 +136,7 @@ export default function ScoreEntryScreen({ state, onEnterScores, onEditHole, onF
 
         <form onSubmit={handleSubmit} className="space-y-3">
           {/* Team A */}
-          <div className="bg-white rounded-xl p-4 shadow-sm border-l-4 border-red-500">
+          <div className="bg-gray-100 rounded-xl p-4 shadow-sm border-l-4 border-red-500">
             <div className="text-xs font-semibold uppercase tracking-wider text-red-600 mb-3">Team A</div>
             {[0, 1].map((pi) => {
               const idx = pi as 0 | 1;
@@ -165,7 +165,7 @@ export default function ScoreEntryScreen({ state, onEnterScores, onEditHole, onF
           </div>
 
           {/* Team B */}
-          <div className="bg-white rounded-xl p-4 shadow-sm border-l-4 border-orange-500">
+          <div className="bg-gray-100 rounded-xl p-4 shadow-sm border-l-4 border-orange-500">
             <div className="text-xs font-semibold uppercase tracking-wider text-orange-600 mb-3">Team B</div>
             {[0, 1].map((pi) => {
               const idx = (pi + 2) as 2 | 3;
@@ -368,7 +368,7 @@ function ScorecardRow({
     <div className={`rounded-lg px-3 py-2 flex items-center gap-2 text-sm ${
       result.winner === "A" ? "bg-red-50 border border-red-100"
       : result.winner === "B" ? "bg-orange-50 border border-orange-100"
-      : "bg-white border border-gray-100"
+      : "bg-gray-100 border border-gray-200"
     }`}>
       <div className="w-6 text-center text-gray-500 text-xs font-bold">{holeNum}</div>
       <div className="text-xs text-gray-400">P{par}</div>

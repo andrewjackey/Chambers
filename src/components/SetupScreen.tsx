@@ -84,29 +84,21 @@ export default function SetupScreen({ onStart, existingSetup }: Props) {
 
   const handicapLabel = handicapMode === "course" ? "Handicap Index" : "Stroke Count";
 
-  const inputCls = "w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500";
+  const inputCls = "w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500";
   const labelCls = "text-xs font-semibold uppercase tracking-wider text-gray-500 block mb-2";
-  const cardCls = "bg-white rounded-xl p-4 shadow-sm";
+  const cardCls = "bg-gray-100 rounded-xl p-4 shadow-sm";
   const toggleBase = "flex-1 py-2 rounded-lg text-sm font-medium transition-colors";
   const toggleOn = "bg-blue-600 text-white";
   const toggleOff = "bg-gray-100 text-gray-600 hover:bg-gray-200";
 
   return (
-    <div className="min-h-screen bg-blue-950 text-white flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-200 text-white flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Header photo */}
-        <div className="relative w-full h-44 overflow-hidden rounded-2xl mb-6">
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Chambers_Bay_Golf_Course%2C_September_2014.jpg/1280px-Chambers_Bay_Golf_Course%2C_September_2014.jpg"
-            alt="Chambers Bay Golf Course"
-            className="w-full h-full object-cover"
-            onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-blue-950 via-blue-950/40 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-4 text-center">
-            <h1 className="text-2xl font-bold tracking-tight drop-shadow">Seattle 4th of July Trip</h1>
-            <p className="text-blue-200 text-sm mt-0.5">Set up your round</p>
-          </div>
+        {/* Header */}
+        <div className="bg-blue-950 rounded-2xl mb-6 py-8 text-center">
+          <div className="text-4xl mb-2">⛳</div>
+          <h1 className="text-2xl font-bold tracking-tight text-white">Seattle 4th of July Trip</h1>
+          <p className="text-blue-300 text-sm mt-1">Set up your round</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -136,7 +128,7 @@ export default function SetupScreen({ onStart, existingSetup }: Props) {
                         value={names[idx]}
                         onChange={(e) => setName(idx, e.target.value)}
                         placeholder={`Player ${idx + 1}`}
-                        className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                   );
@@ -178,7 +170,7 @@ export default function SetupScreen({ onStart, existingSetup }: Props) {
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">$</span>
                 <input type="number" step="0.01" min="0" value={dollarRate} onChange={(e) => setDollarRate(e.target.value)}
-                  className="w-full bg-white border border-gray-300 rounded-lg pl-7 pr-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full bg-white border border-gray-200 rounded-lg pl-7 pr-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -202,7 +194,7 @@ export default function SetupScreen({ onStart, existingSetup }: Props) {
                       <div className="relative">
                         <span className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs">$</span>
                         <input type="number" step="1" min="0" value={val} onChange={(e) => setter(e.target.value)}
-                          className="w-full bg-white border border-gray-300 rounded-lg pl-5 pr-2 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full bg-white border border-gray-200 rounded-lg pl-5 pr-2 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
                     </div>
@@ -216,7 +208,7 @@ export default function SetupScreen({ onStart, existingSetup }: Props) {
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">$</span>
                     <input type="number" step="1" min="0" value={standardAmount} onChange={(e) => setStandardAmount(e.target.value)}
-                      className="w-full bg-white border border-gray-300 rounded-lg pl-7 pr-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full bg-white border border-gray-200 rounded-lg pl-7 pr-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                 </div>
@@ -228,7 +220,7 @@ export default function SetupScreen({ onStart, existingSetup }: Props) {
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">$</span>
                     <input type="number" step="0.01" min="0" value={dollarRate} onChange={(e) => setDollarRate(e.target.value)}
-                      className="w-full bg-white border border-gray-300 rounded-lg pl-7 pr-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full bg-white border border-gray-200 rounded-lg pl-7 pr-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                 </div>

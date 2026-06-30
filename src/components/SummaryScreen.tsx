@@ -65,7 +65,7 @@ export default function SummaryScreen({ state, onReset }: Props) {
   const teamBWins = !payoutInfo.tied && payoutInfo.winnerName === teamBName;
 
   return (
-    <div className="min-h-screen bg-slate-100 text-gray-900 flex flex-col">
+    <div className="min-h-screen bg-gray-200 text-gray-900 flex flex-col">
       <div className="bg-blue-950 px-4 py-4 border-b border-blue-900 text-center">
         <h1 className="text-xl font-bold text-white">Round Complete</h1>
         <p className="text-blue-300 text-sm">{course.name}</p>
@@ -95,7 +95,7 @@ export default function SummaryScreen({ state, onReset }: Props) {
         </div>
 
         {/* Tally */}
-        <div className="bg-white rounded-xl p-4 shadow-sm">
+        <div className="bg-gray-100 rounded-xl p-4 shadow-sm">
           <h2 className="text-xs uppercase tracking-wider text-gray-500 mb-3">Final Tally</h2>
           <div className="grid grid-cols-2 gap-3">
             {(["A", "B"] as const).map((team) => {
@@ -106,7 +106,7 @@ export default function SummaryScreen({ state, onReset }: Props) {
                 <div key={team} className={`rounded-xl p-3 text-center border-2 ${
                   isWinner
                     ? team === "A" ? "border-red-500 bg-red-50" : "border-orange-500 bg-orange-50"
-                    : "border-gray-200 bg-gray-50"
+                    : "border-gray-300 bg-gray-200"
                 }`}>
                   <div className={`text-xs font-semibold mb-1 ${team === "A" ? "text-red-600" : "text-orange-600"}`}>Team {team}</div>
                   <div className="text-sm text-gray-700 truncate mb-2">{name}</div>
@@ -119,7 +119,7 @@ export default function SummaryScreen({ state, onReset }: Props) {
         </div>
 
         {/* Hole by hole */}
-        <div className="bg-white rounded-xl p-4 shadow-sm">
+        <div className="bg-gray-100 rounded-xl p-4 shadow-sm">
           <h2 className="text-xs uppercase tracking-wider text-gray-500 mb-3">Hole by Hole</h2>
           <div className="space-y-1">
             {holeResults.map((result, i) => {
@@ -128,7 +128,7 @@ export default function SummaryScreen({ state, onReset }: Props) {
                 <div key={i} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm ${
                   result.winner === "A" ? "bg-red-50 border border-red-100"
                   : result.winner === "B" ? "bg-orange-50 border border-orange-100"
-                  : "bg-gray-50 border border-gray-100"
+                  : "bg-gray-200 border border-gray-300"
                 }`}>
                   <div className="w-5 text-xs text-gray-400 text-right">{i + 1}</div>
                   <div className="text-xs text-gray-400">p{course.holes[i].par}</div>

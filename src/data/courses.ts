@@ -36,9 +36,11 @@ const homeCourse: Course = {
   id: "home-course",
   name: "The Home Course",
   tees: [
-    { id: "blue",  name: "Blue",  slope: 136, rating: 73.7, par: 72 },
-    { id: "white", name: "White", slope: 128, rating: 71.0, par: 72 },
-    { id: "gold",  name: "Gold",  slope: 120, rating: 68.5, par: 72 },
+    { id: "dynamite", name: "Dynamite", slope: 138, rating: 74.8, par: 72 },
+    { id: "black",    name: "Black",    slope: 135, rating: 73.0, par: 72 },
+    { id: "blue",     name: "Blue",     slope: 131, rating: 71.0, par: 72 },
+    { id: "white",    name: "White",    slope: 125, rating: 68.7, par: 72 },
+    { id: "gold",     name: "Gold",     slope: 113, rating: 65.5, par: 72 },
   ],
   holes: [
     { hole: 1,  par: 4, strokeIndex: 9  },
@@ -66,9 +68,11 @@ const goldMountainCascade: Course = {
   id: "gold-mountain-cascade",
   name: "Gold Mountain (Cascade)",
   tees: [
-    { id: "blue",  name: "Blue",  slope: 130, rating: 72.8, par: 72 },
-    { id: "white", name: "White", slope: 124, rating: 70.3, par: 72 },
-    { id: "gold",  name: "Gold",  slope: 116, rating: 67.9, par: 72 },
+    { id: "gold",   name: "Gold",   slope: 134, rating: 73.4, par: 72 },
+    { id: "blue",   name: "Blue",   slope: 129, rating: 71.6, par: 72 },
+    { id: "white",  name: "White",  slope: 124, rating: 70.1, par: 72 },
+    { id: "yellow", name: "Yellow", slope: 116, rating: 67.9, par: 72 },
+    { id: "red",    name: "Red",    slope: 113, rating: 66.4, par: 72 },
   ],
   holes: [
     { hole: 1,  par: 5, strokeIndex: 5  },
@@ -96,9 +100,11 @@ const goldMountainOlympic: Course = {
   id: "gold-mountain-olympic",
   name: "Gold Mountain (Olympic)",
   tees: [
-    { id: "blue",  name: "Blue",  slope: 141, rating: 74.4, par: 72 },
-    { id: "white", name: "White", slope: 134, rating: 71.8, par: 72 },
-    { id: "gold",  name: "Gold",  slope: 126, rating: 69.2, par: 72 },
+    { id: "gold",   name: "Gold",   slope: 148, rating: 74.9, par: 72 },
+    { id: "blue",   name: "Blue",   slope: 142, rating: 72.6, par: 72 },
+    { id: "white",  name: "White",  slope: 134, rating: 70.2, par: 72 },
+    { id: "yellow", name: "Yellow", slope: 125, rating: 68.9, par: 72 },
+    { id: "red",    name: "Red",    slope: 122, rating: 67.0, par: 72 },
   ],
   holes: [
     { hole: 1,  par: 4, strokeIndex: 13 },
