@@ -1,7 +1,7 @@
 "use client";
 import { useReducer, useEffect, useState } from "react";
 import { gameReducer, initialState } from "@/lib/gameState";
-import { loadTrip, saveTrip, type TripState, type CompletedRound } from "@/lib/tripState";
+import { fetchTrip, persistTrip, type TripState, type CompletedRound } from "@/lib/tripState";
 import SetupScreen from "@/components/SetupScreen";
 import ScoreEntryScreen from "@/components/ScoreEntryScreen";
 import SummaryScreen from "@/components/SummaryScreen";
@@ -41,10 +41,14 @@ export default function Home() {
   const [trip, setTrip] = useState<TripState>({ rounds: [] });
   const [selectedRoundId, setSelectedRoundId] = useState<string | null>(null);
   const [activeRound, setActiveRound] = useState<GameState | null>(null);
+  const [loading, setLoading] = useState(true);
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    setTrip(loadTrip());
+    fetchTrip().then((t) => {
+      setTrip(t);
+      setLoading(false);
+    });
     setActiveRound(loadActiveRound());
     setInitialized(true);
   }, []);
@@ -71,7 +75,7 @@ export default function Home() {
     setActiveRound(null);
   }
 
-  function saveRoundToTrip() {
+  async function saveRoundToTrip() {
     if (!roundState.setup) return;
     const completed: CompletedRound = {
       id: crypto.randomUUID(),
@@ -83,7 +87,7 @@ export default function Home() {
     };
     const newTrip = { rounds: [...trip.rounds, completed] };
     setTrip(newTrip);
-    saveTrip(newTrip);
+    await persistTrip(newTrip);
     localStorage.removeItem(ROUND_KEY);
     dispatch({ type: "RESET" });
     setScreen("home");
@@ -94,11 +98,20 @@ export default function Home() {
     setScreen("round-detail");
   }
 
-  function deleteRound(id: string) {
+  async function deleteRound(id: string) {
     const newTrip = { rounds: trip.rounds.filter((r) => r.id !== id) };
     setTrip(newTrip);
-    saveTrip(newTrip);
+    await persistTrip(newTrip);
     setScreen("home");
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-200 flex flex-col items-center justify-center gap-3">
+        <div className="text-4xl">⛳</div>
+        <div className="text-gray-500 text-sm">Loading trip data…</div>
+      </div>
+    );
   }
 
   if (screen === "round-detail") {

@@ -14,22 +14,22 @@ export interface TripState {
   rounds: CompletedRound[];
 }
 
-export const TRIP_KEY = "chambers-trip";
-
-export function loadTrip(): TripState {
+export async function fetchTrip(): Promise<TripState> {
   try {
-    const raw = localStorage.getItem(TRIP_KEY);
-    if (!raw) return { rounds: [] };
-    return JSON.parse(raw) as TripState;
+    const res = await fetch("/api/trip");
+    if (!res.ok) return { rounds: [] };
+    return res.json();
   } catch {
     return { rounds: [] };
   }
 }
 
-export function saveTrip(trip: TripState): void {
-  try {
-    localStorage.setItem(TRIP_KEY, JSON.stringify(trip));
-  } catch {}
+export async function persistTrip(trip: TripState): Promise<void> {
+  await fetch("/api/trip", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(trip),
+  });
 }
 
 export interface RoundPayout {
