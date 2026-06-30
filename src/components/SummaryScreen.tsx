@@ -3,10 +3,11 @@ import type { GameState } from "@/lib/gameState";
 
 interface Props {
   state: GameState;
-  onReset: () => void;
+  onSaveToTrip: () => void;
+  onEditScores?: () => void;
 }
 
-export default function SummaryScreen({ state, onReset }: Props) {
+export default function SummaryScreen({ state, onSaveToTrip, onEditScores }: Props) {
   const { setup, tally, holeResults } = state;
   if (!setup) return null;
   const { players, dollarRate, course, gameType, bettingFormat, nassauFront, nassauBack, nassauTotal, standardAmount } = setup;
@@ -154,9 +155,16 @@ export default function SummaryScreen({ state, onReset }: Props) {
           </div>
         </div>
 
-        <button onClick={onReset} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl text-lg transition-colors shadow-md">
-          New Round
-        </button>
+        <div className="space-y-2">
+          <button onClick={onSaveToTrip} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl text-lg transition-colors shadow-md">
+            Save & Back to Trip
+          </button>
+          {onEditScores && (
+            <button onClick={onEditScores} className="w-full text-center text-gray-500 hover:text-gray-700 py-3 text-sm transition-colors">
+              Edit Scores
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -6,6 +6,8 @@ import type { GameSetup, HandicapMode, GameType, BettingFormat } from "@/lib/gam
 interface Props {
   onStart: (setup: GameSetup) => void;
   existingSetup?: GameSetup | null;
+  roundNumber?: number;
+  onCancel?: () => void;
 }
 
 const DEFAULT_NAMES: [string, string, string, string] = ["Drew", "Aaron", "Graham", "Clayton"];
@@ -14,10 +16,7 @@ function computeCourseHandicap(index: number, slope: number, rating: number, par
   return Math.round(index * (slope / 113) + (rating - par));
 }
 
-export default function SetupScreen({ onStart, existingSetup }: Props) {
-  const [names, setNames] = useState<[string, string, string, string]>(
-    existingSetup ? existingSetup.players.map((p) => p.name) as [string, string, string, string] : [...DEFAULT_NAMES]
-  );
+export default function SetupScreen({ onStart, existingSetup, roundNumber, onCancel }: Props) {
   const [dollarRate, setDollarRate] = useState(existingSetup ? String(existingSetup.dollarRate) : "1.00");
   const [courseId, setCourseId] = useState(existingSetup ? existingSetup.course.id : COURSES[0].id);
   const [gameType, setGameType] = useState<GameType>(existingSetup ? existingSetup.gameType : "vegas");
@@ -36,11 +35,6 @@ export default function SetupScreen({ onStart, existingSetup }: Props) {
   const [teeId, setTeeId] = useState(defaultTeeId);
   const tee = course.tees.find((t) => t.id === teeId) ?? course.tees[0];
 
-  function setName(i: number, v: string) {
-    const n = [...names] as [string, string, string, string];
-    n[i] = v;
-    setNames(n);
-  }
   function setHandicapInput(i: number, v: string) {
     const h = [...handicapInputs] as [string, string, string, string];
     h[i] = v;
@@ -67,7 +61,7 @@ export default function SetupScreen({ onStart, existingSetup }: Props) {
     e.preventDefault();
     const rate = parseFloat(dollarRate);
     onStart({
-      players: names.map((name) => ({ name })) as [{ name: string }, { name: string }, { name: string }, { name: string }],
+      players: DEFAULT_NAMES.map((name) => ({ name })) as [{ name: string }, { name: string }, { name: string }, { name: string }],
       dollarRate: isNaN(rate) ? 1 : rate,
       course,
       teeId: tee.id,
@@ -98,7 +92,9 @@ export default function SetupScreen({ onStart, existingSetup }: Props) {
         <div className="bg-blue-950 rounded-2xl mb-6 py-8 text-center">
           <div className="text-4xl mb-2">⛳</div>
           <h1 className="text-2xl font-bold tracking-tight text-white">Seattle 4th of July Trip</h1>
-          <p className="text-blue-300 text-sm mt-1">Set up your round</p>
+          <p className="text-blue-300 text-sm mt-1">
+            {roundNumber ? `Round ${roundNumber} Setup` : "Set up your round"}
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -112,29 +108,18 @@ export default function SetupScreen({ onStart, existingSetup }: Props) {
             </select>
           </div>
 
-          {/* Teams */}
-          <div className="grid grid-cols-2 gap-3">
-            {(["Team A", "Team B"] as const).map((team, ti) => (
-              <div key={team} className={cardCls}>
-                <div className={`text-xs font-semibold mb-3 uppercase tracking-wider ${ti === 0 ? "text-red-600" : "text-orange-500"}`}>
-                  {team}
-                </div>
-                {[0, 1].map((pi) => {
-                  const idx = ti * 2 + pi as 0 | 1 | 2 | 3;
-                  return (
-                    <div key={pi} className="mb-2 last:mb-0">
-                      <input
-                        type="text"
-                        value={names[idx]}
-                        onChange={(e) => setName(idx, e.target.value)}
-                        placeholder={`Player ${idx + 1}`}
-                        className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            ))}
+          {/* Fixed teams */}
+          <div className={`${cardCls} grid grid-cols-2 gap-4`}>
+            <div>
+              <div className="text-xs font-semibold mb-2 uppercase tracking-wider text-red-600">Team A</div>
+              <div className="text-sm text-gray-700">Drew</div>
+              <div className="text-sm text-gray-700">Aaron</div>
+            </div>
+            <div>
+              <div className="text-xs font-semibold mb-2 uppercase tracking-wider text-orange-500">Team B</div>
+              <div className="text-sm text-gray-700">Graham</div>
+              <div className="text-sm text-gray-700">Clayton</div>
+            </div>
           </div>
 
           {/* Course */}
@@ -241,7 +226,7 @@ export default function SetupScreen({ onStart, existingSetup }: Props) {
               ))}
             </div>
             <div className="grid grid-cols-2 gap-2">
-              {names.map((name, i) => {
+              {DEFAULT_NAMES.map((name, i) => {
                 const inputVal = parseFloat(handicapInputs[i]) || 0;
                 const computed = handicapMode === "course"
                   ? computeCourseHandicap(inputVal, tee.slope, tee.rating, tee.par)
@@ -275,6 +260,11 @@ export default function SetupScreen({ onStart, existingSetup }: Props) {
           <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl text-lg transition-colors shadow-lg">
             Start Round
           </button>
+          {onCancel && (
+            <button type="button" onClick={onCancel} className="w-full text-center text-gray-500 hover:text-gray-700 py-3 text-sm transition-colors">
+              ← Back to Trip
+            </button>
+          )}
         </form>
       </div>
     </div>
