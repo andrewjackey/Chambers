@@ -84,10 +84,17 @@ export default function SetupScreen({ onStart, existingSetup }: Props) {
 
   const handicapLabel = handicapMode === "course" ? "Handicap Index" : "Stroke Count";
 
+  const inputCls = "w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500";
+  const labelCls = "text-xs font-semibold uppercase tracking-wider text-gray-500 block mb-2";
+  const cardCls = "bg-white rounded-xl p-4 shadow-sm";
+  const toggleBase = "flex-1 py-2 rounded-lg text-sm font-medium transition-colors";
+  const toggleOn = "bg-blue-600 text-white";
+  const toggleOff = "bg-gray-100 text-gray-600 hover:bg-gray-200";
+
   return (
     <div className="min-h-screen bg-blue-950 text-white flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Header with Chambers Bay photo */}
+        {/* Header photo */}
         <div className="relative w-full h-44 overflow-hidden rounded-2xl mb-6">
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Chambers_Bay_Golf_Course%2C_September_2014.jpg/1280px-Chambers_Bay_Golf_Course%2C_September_2014.jpg"
@@ -98,19 +105,15 @@ export default function SetupScreen({ onStart, existingSetup }: Props) {
           <div className="absolute inset-0 bg-gradient-to-t from-blue-950 via-blue-950/40 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-4 text-center">
             <h1 className="text-2xl font-bold tracking-tight drop-shadow">Seattle 4th of July Trip</h1>
-            <p className="text-blue-300 text-sm mt-0.5">Set up your round</p>
+            <p className="text-blue-200 text-sm mt-0.5">Set up your round</p>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {/* Game type */}
-          <div className="bg-blue-900/50 rounded-xl p-4">
-            <label className="text-xs font-semibold uppercase tracking-wider text-blue-300 block mb-2">Game</label>
-            <select
-              value={gameType}
-              onChange={(e) => setGameType(e.target.value as GameType)}
-              className="w-full bg-blue-800/60 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
-            >
+          <div className={cardCls}>
+            <label className={labelCls}>Game</label>
+            <select value={gameType} onChange={(e) => setGameType(e.target.value as GameType)} className={inputCls}>
               <option value="vegas">Vegas</option>
               <option value="best-ball">Best Ball</option>
               <option value="best-ball-second">Best Ball — 2nd Ball Kicker</option>
@@ -120,8 +123,8 @@ export default function SetupScreen({ onStart, existingSetup }: Props) {
           {/* Teams */}
           <div className="grid grid-cols-2 gap-3">
             {(["Team A", "Team B"] as const).map((team, ti) => (
-              <div key={team} className="bg-blue-900/50 rounded-xl p-4">
-                <div className={`text-xs font-semibold mb-3 uppercase tracking-wider ${ti === 0 ? "text-red-400" : "text-orange-400"}`}>
+              <div key={team} className={cardCls}>
+                <div className={`text-xs font-semibold mb-3 uppercase tracking-wider ${ti === 0 ? "text-red-600" : "text-orange-500"}`}>
                   {team}
                 </div>
                 {[0, 1].map((pi) => {
@@ -133,7 +136,7 @@ export default function SetupScreen({ onStart, existingSetup }: Props) {
                         value={names[idx]}
                         onChange={(e) => setName(idx, e.target.value)}
                         placeholder={`Player ${idx + 1}`}
-                        className="w-full bg-blue-800/60 rounded-lg px-3 py-2 text-sm text-white placeholder:text-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                   );
@@ -143,52 +146,39 @@ export default function SetupScreen({ onStart, existingSetup }: Props) {
           </div>
 
           {/* Course */}
-          <div className="bg-blue-900/50 rounded-xl p-4">
-            <label className="text-xs font-semibold uppercase tracking-wider text-blue-300 block mb-2">Course</label>
-            <select
-              value={courseId}
-              onChange={(e) => handleCourseChange(e.target.value)}
-              className="w-full bg-blue-800/60 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-400 mb-3"
-            >
+          <div className={cardCls}>
+            <label className={labelCls}>Course</label>
+            <select value={courseId} onChange={(e) => handleCourseChange(e.target.value)} className={`${inputCls} mb-3`}>
               {COURSES.map((c) => (
                 <option key={c.id} value={c.id}>{c.name}</option>
               ))}
             </select>
-            <label className="text-xs font-semibold uppercase tracking-wider text-blue-300 block mb-2">Tees</label>
-            <div className="flex gap-2">
+            <label className={labelCls}>Tees</label>
+            <div className="flex gap-2 flex-wrap">
               {course.tees.map((t) => (
                 <button
                   key={t.id}
                   type="button"
                   onClick={() => setTeeId(t.id)}
-                  className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    teeId === t.id
-                      ? "bg-blue-500 text-white"
-                      : "bg-blue-800/60 text-blue-300 hover:bg-blue-700/60"
-                  }`}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${teeId === t.id ? toggleOn : toggleOff}`}
                 >
                   {t.name}
                 </button>
               ))}
             </div>
-            <div className="mt-2 text-xs text-blue-400 text-center">
+            <div className="mt-2 text-xs text-gray-500 text-center">
               Rating {tee.rating} · Slope {tee.slope} · Par {tee.par}
             </div>
           </div>
 
           {/* Dollar rate — Vegas only */}
           {gameType === "vegas" && (
-            <div className="bg-blue-900/50 rounded-xl p-4">
-              <label className="text-xs font-semibold uppercase tracking-wider text-blue-300 block mb-2">$ Per Point</label>
+            <div className={cardCls}>
+              <label className={labelCls}>$ Per Point</label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-400">$</span>
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={dollarRate}
-                  onChange={(e) => setDollarRate(e.target.value)}
-                  className="w-full bg-blue-800/60 rounded-lg pl-7 pr-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">$</span>
+                <input type="number" step="0.01" min="0" value={dollarRate} onChange={(e) => setDollarRate(e.target.value)}
+                  className="w-full bg-white border border-gray-300 rounded-lg pl-7 pr-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -196,13 +186,9 @@ export default function SetupScreen({ onStart, existingSetup }: Props) {
 
           {/* Betting format — best-ball games only */}
           {(gameType === "best-ball" || gameType === "best-ball-second") && (
-            <div className="bg-blue-900/50 rounded-xl p-4">
-              <label className="text-xs font-semibold uppercase tracking-wider text-blue-300 block mb-2">Betting Format</label>
-              <select
-                value={bettingFormat}
-                onChange={(e) => setBettingFormat(e.target.value as BettingFormat)}
-                className="w-full bg-blue-800/60 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-400 mb-3"
-              >
+            <div className={cardCls}>
+              <label className={labelCls}>Betting Format</label>
+              <select value={bettingFormat} onChange={(e) => setBettingFormat(e.target.value as BettingFormat)} className={`${inputCls} mb-3`}>
                 <option value="nassau">Nassau (Front / Back / Total)</option>
                 <option value="standard">Standard (Per 18)</option>
                 <option value="per-hole">Per Hole</option>
@@ -212,14 +198,11 @@ export default function SetupScreen({ onStart, existingSetup }: Props) {
                 <div className="grid grid-cols-3 gap-2">
                   {([["Front 9", nassauFront, setNassauFront], ["Back 9", nassauBack, setNassauBack], ["Total", nassauTotal, setNassauTotal]] as [string, string, (v: string) => void][]).map(([label, val, setter]) => (
                     <div key={label}>
-                      <label className="text-xs text-blue-300 block mb-1">{label}</label>
+                      <label className="text-xs text-gray-500 block mb-1">{label}</label>
                       <div className="relative">
-                        <span className="absolute left-2 top-1/2 -translate-y-1/2 text-blue-400 text-xs">$</span>
-                        <input
-                          type="number" step="1" min="0"
-                          value={val}
-                          onChange={(e) => setter(e.target.value)}
-                          className="w-full bg-blue-800/60 rounded-lg pl-5 pr-2 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        <span className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs">$</span>
+                        <input type="number" step="1" min="0" value={val} onChange={(e) => setter(e.target.value)}
+                          className="w-full bg-white border border-gray-300 rounded-lg pl-5 pr-2 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
                     </div>
@@ -229,14 +212,11 @@ export default function SetupScreen({ onStart, existingSetup }: Props) {
 
               {bettingFormat === "standard" && (
                 <div>
-                  <label className="text-xs text-blue-300 block mb-1">Total Bet</label>
+                  <label className="text-xs text-gray-500 block mb-1">Total Bet</label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-400">$</span>
-                    <input
-                      type="number" step="1" min="0"
-                      value={standardAmount}
-                      onChange={(e) => setStandardAmount(e.target.value)}
-                      className="w-full bg-blue-800/60 rounded-lg pl-7 pr-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">$</span>
+                    <input type="number" step="1" min="0" value={standardAmount} onChange={(e) => setStandardAmount(e.target.value)}
+                      className="w-full bg-white border border-gray-300 rounded-lg pl-7 pr-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                 </div>
@@ -244,14 +224,11 @@ export default function SetupScreen({ onStart, existingSetup }: Props) {
 
               {bettingFormat === "per-hole" && (
                 <div>
-                  <label className="text-xs text-blue-300 block mb-1">$ Per Hole</label>
+                  <label className="text-xs text-gray-500 block mb-1">$ Per Hole</label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-400">$</span>
-                    <input
-                      type="number" step="0.01" min="0"
-                      value={dollarRate}
-                      onChange={(e) => setDollarRate(e.target.value)}
-                      className="w-full bg-blue-800/60 rounded-lg pl-7 pr-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">$</span>
+                    <input type="number" step="0.01" min="0" value={dollarRate} onChange={(e) => setDollarRate(e.target.value)}
+                      className="w-full bg-white border border-gray-300 rounded-lg pl-7 pr-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                 </div>
@@ -260,19 +237,12 @@ export default function SetupScreen({ onStart, existingSetup }: Props) {
           )}
 
           {/* Handicap mode */}
-          <div className="bg-blue-900/50 rounded-xl p-4">
-            <label className="text-xs font-semibold uppercase tracking-wider text-blue-300 block mb-3">Handicap Mode</label>
+          <div className={cardCls}>
+            <label className={labelCls}>Handicap Mode</label>
             <div className="flex gap-2 mb-4">
               {(["course", "manual"] as HandicapMode[]).map((mode) => (
-                <button
-                  key={mode}
-                  type="button"
-                  onClick={() => setHandicapMode(mode)}
-                  className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    handicapMode === mode
-                      ? "bg-blue-500 text-white"
-                      : "bg-blue-800/60 text-blue-300 hover:bg-blue-700/60"
-                  }`}
+                <button key={mode} type="button" onClick={() => setHandicapMode(mode)}
+                  className={`${toggleBase} ${handicapMode === mode ? toggleOn : toggleOff}`}
                 >
                   {mode === "course" ? "Course HCP" : "Manual Strokes"}
                 </button>
@@ -286,37 +256,31 @@ export default function SetupScreen({ onStart, existingSetup }: Props) {
                   : null;
                 return (
                   <div key={i}>
-                    <label className="text-xs text-blue-300 block mb-1 truncate">{name || `Player ${i + 1}`}</label>
+                    <label className="text-xs text-gray-500 block mb-1 truncate">{name || `Player ${i + 1}`}</label>
                     <input
-                      type="number"
-                      min="0"
-                      max="54"
-                      step={handicapMode === "course" ? "0.1" : "1"}
+                      type="number" min="0" max="54" step={handicapMode === "course" ? "0.1" : "1"}
                       value={handicapInputs[i]}
                       onChange={(e) => setHandicapInput(i as 0|1|2|3, e.target.value)}
-                      className="w-full bg-blue-800/60 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+                      className={inputCls}
                       placeholder={handicapLabel}
                     />
                     {computed !== null && (
-                      <div className="text-xs text-blue-400 mt-1 text-center">
-                        Course HCP: <span className="text-blue-200 font-semibold">{computed}</span>
+                      <div className="text-xs text-gray-500 mt-1 text-center">
+                        Course HCP: <span className="text-blue-700 font-semibold">{computed}</span>
                       </div>
                     )}
                   </div>
                 );
               })}
             </div>
-            <p className="text-xs text-blue-500 mt-2">
+            <p className="text-xs text-gray-400 mt-2">
               {handicapMode === "course"
                 ? `Enter each player's Handicap Index. Course HCP = Index × (${tee.slope}/113) + (${tee.rating} − ${tee.par}).`
                 : "Enter stroke count directly. Set 0 for gross play."}
             </p>
           </div>
 
-          <button
-            type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-400 text-white font-bold py-4 rounded-xl text-lg transition-colors"
-          >
+          <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl text-lg transition-colors shadow-lg">
             Start Round
           </button>
         </form>

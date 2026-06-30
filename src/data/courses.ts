@@ -4,10 +4,11 @@ const chambersBay: Course = {
   id: "chambers-bay",
   name: "Chambers Bay",
   tees: [
-    { id: "championship", name: "Championship", slope: 148, rating: 76.8, par: 72 },
-    { id: "blue",         name: "Blue",         slope: 140, rating: 73.9, par: 72 },
-    { id: "white",        name: "White",        slope: 130, rating: 70.4, par: 72 },
-    { id: "red",          name: "Red",          slope: 120, rating: 67.2, par: 72 },
+    { id: "black",      name: "Black",      slope: 138, rating: 74.4, par: 72 },
+    { id: "black-blue", name: "Black/Blue", slope: 136, rating: 73.4, par: 72 },
+    { id: "blue",       name: "Blue",       slope: 134, rating: 72.4, par: 72 },
+    { id: "blue-sand",  name: "Blue/Sand",  slope: 132, rating: 71.5, par: 72 },
+    { id: "sand",       name: "Sand",       slope: 130, rating: 70.6, par: 72 },
   ],
   holes: [
     { hole: 1,  par: 4, strokeIndex: 11 },
